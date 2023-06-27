@@ -1,4 +1,8 @@
 
+using Microsoft.EntityFrameworkCore;
+using RunGroops.Infrastructure.Context;
+using System.Configuration;
+
 namespace RunGroopsAPI
 {
     public class Program
@@ -10,6 +14,9 @@ namespace RunGroopsAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresRunGroops")));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

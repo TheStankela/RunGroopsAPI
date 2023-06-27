@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunGroopsAPI", "RunGroopsAPI\RunGroopsAPI.csproj", "{3F4CA25C-B4D5-418C-A2B0-E4ACB5D63455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RunGroopsAPI", "RunGroopsAPI\RunGroopsAPI.csproj", "{3F4CA25C-B4D5-418C-A2B0-E4ACB5D63455}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5EA1DF7C-D0A5-4DE0-A745-D6AA67E60251} = {5EA1DF7C-D0A5-4DE0-A745-D6AA67E60251}
+		{9265E1A0-E1D7-4A63-B1F3-BB4B3685BBD0} = {9265E1A0-E1D7-4A63-B1F3-BB4B3685BBD0}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunGroops.Infrastructure", "RunGroops.Infrastructure\RunGroops.Infrastructure.csproj", "{5EA1DF7C-D0A5-4DE0-A745-D6AA67E60251}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunGroops.Application", "RunGroops.Application\RunGroops.Application.csproj", "{54BFEEC1-5CE4-4983-8768-01251254DC6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunGroops.Domain", "RunGroops.Domain\RunGroops.Domain.csproj", "{9265E1A0-E1D7-4A63-B1F3-BB4B3685BBD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +25,18 @@ Global
 		{3F4CA25C-B4D5-418C-A2B0-E4ACB5D63455}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F4CA25C-B4D5-418C-A2B0-E4ACB5D63455}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F4CA25C-B4D5-418C-A2B0-E4ACB5D63455}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EA1DF7C-D0A5-4DE0-A745-D6AA67E60251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA1DF7C-D0A5-4DE0-A745-D6AA67E60251}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA1DF7C-D0A5-4DE0-A745-D6AA67E60251}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA1DF7C-D0A5-4DE0-A745-D6AA67E60251}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54BFEEC1-5CE4-4983-8768-01251254DC6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54BFEEC1-5CE4-4983-8768-01251254DC6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54BFEEC1-5CE4-4983-8768-01251254DC6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54BFEEC1-5CE4-4983-8768-01251254DC6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9265E1A0-E1D7-4A63-B1F3-BB4B3685BBD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9265E1A0-E1D7-4A63-B1F3-BB4B3685BBD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9265E1A0-E1D7-4A63-B1F3-BB4B3685BBD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9265E1A0-E1D7-4A63-B1F3-BB4B3685BBD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
