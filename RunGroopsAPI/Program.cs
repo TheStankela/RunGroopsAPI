@@ -1,6 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
+using RunGroops.Domain.Interfaces;
 using RunGroops.Infrastructure.Context;
+using RunGroops.Infrastructure.Repository;
 using System.Configuration;
 
 namespace RunGroopsAPI
@@ -14,6 +16,8 @@ namespace RunGroopsAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddScoped<IClubRepository, ClubRepository>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresRunGroops")));

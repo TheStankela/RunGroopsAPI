@@ -1,43 +1,59 @@
-﻿using RunGroops.Domain.EFModels;
+﻿using Microsoft.EntityFrameworkCore;
+using RunGroops.Domain.EFModels;
 using RunGroops.Domain.Interfaces;
+using RunGroops.Infrastructure.Context;
 
 namespace RunGroops.Infrastructure.Repository
 {
     public class ClubRepository : IClubRepository
     {
-        public Task<bool> AddClubAsync(Club club)
+        private readonly ApplicationDbContext _context;
+
+        public ClubRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<bool> AddClubAsync(Club club)
+        {
+            await _context.AddAsync(club);
+            return await Save();
         }
 
-        public Task<bool> DeleteClubAsync(Club club)
+        public async Task<bool> DeleteClubAsync(Club club)
         {
-            throw new NotImplementedException();
+            _context.Remove(club);
+            return await Save();
         }
 
-        public Task<bool> EditClubAsync(Club club)
+        public async Task<bool> UpdateClubAsync(Club club)
         {
-            throw new NotImplementedException();
+            _context.Update(club);
+            return await Save();
         }
 
-        public Task<Club> GetClubByIdAsync(int id)
+        public async Task<Club?> GetClubByIdAsync(int id)
         {
-            throw new NotImplementedException();
+           return await _context.Clubs.Include(c => c.Address).FirstOrDefaultAsync(c => c.Id == id); 
         }
 
-        public Task<Club> GetClubByNameAsync(string clubName)
+        public Task<Club?> GetClubByNameAsync(string clubName)
         {
-            throw new NotImplementedException();
+            return _context.Clubs.Include(c => c.Address).FirstOrDefaultAsync(c => c.Name == clubName);
         }
 
-        public Task<ICollection<Club>> GetClubsAsync()
+        public async Task<ICollection<Club>> GetClubsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Clubs.Include(c => c.Address).ToListAsync();
         }
 
-        public Task<ICollection<Club>> GetClubsByCityAsync(string city)
+        public async Task<ICollection<Club>> GetClubsByCityAsync(string city)
         {
-            throw new NotImplementedException();
+            return await _context.Clubs.Where(c => c.Address.City == city).Include(c => c.Address).ToListAsync();
+        }
+        private async Task<bool> Save()
+        {
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0 ? true : false;
         }
     }
 }
