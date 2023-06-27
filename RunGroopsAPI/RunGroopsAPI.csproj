@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RunGroops.Domain\RunGroops.Domain.csproj" />
     <ProjectReference Include="..\RunGroops.Infrastructure\RunGroops.Infrastructure.csproj" />
   </ItemGroup>
