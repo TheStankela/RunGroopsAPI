@@ -13,8 +13,9 @@ namespace RunGroops.Application.Handlers.ClubHanders
         }
         public async Task<bool> Handle(UpdateClubCommand request, CancellationToken cancellationToken)
         {
+            if (!await _clubRepository.ClubExists(request.clubId, null)) return false;
+
             var clubToUpdate = await _clubRepository.GetClubByIdAsync(request.clubId);
-            if(clubToUpdate == null) return false;
 
             clubToUpdate.Name = request.UpdateClubRequest.Name;
             clubToUpdate.Description = request.UpdateClubRequest.Description;

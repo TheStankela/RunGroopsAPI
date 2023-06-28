@@ -52,7 +52,7 @@ namespace RunGroops.Infrastructure.Repository
         }
         public async Task<bool> ClubExists(int id, string? name)
         {
-            return _context.Clubs.Any(c => c.Id == id || c.Name == name);
+            return await _context.Clubs.AnyAsync(c => c.Id == id || c.Name == name);
         }
         private async Task<bool> Save()
         {
