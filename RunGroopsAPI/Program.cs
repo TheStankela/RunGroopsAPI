@@ -6,7 +6,9 @@ using RunGroops.Domain.Interfaces;
 using RunGroops.Infrastructure.Context;
 using RunGroops.Infrastructure.Repositories;
 using RunGroops.Infrastructure.Repository;
-using System.Configuration;
+using FluentValidation;
+using RunGroops.Application.Validators;
+using FluentValidation.AspNetCore;
 
 namespace RunGroopsAPI
 {
@@ -24,8 +26,12 @@ namespace RunGroopsAPI
             builder.Services.AddScoped<IClubMapper, ClubMapper>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 
+            builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresRunGroops")));
+
+            builder.Services.AddValidatorsFromAssemblyContaining<ClubRequestValidator>();
 
             builder.Services.AddMediatR(options =>
             {

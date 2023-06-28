@@ -47,20 +47,26 @@ namespace RunGroopsAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddClubAsync(ClubRequest clubRequest)
         {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var command = new AddClubCommand(clubRequest);
             var result = await _mediator.Send(command);
             return result is true ? Ok("Added successfully!") : BadRequest();
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateClubAsync(int clubId, UpdateClubRequest updateClubRequest)
+        public async Task<IActionResult> UpdateClubAsync([FromQuery] int clubId, UpdateClubRequest updateClubRequest)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var command = new UpdateClubCommand(clubId, updateClubRequest);
             var result = await _mediator.Send(command);
 
             return result is true ? Ok("Updated successfully") : BadRequest();
         }
         [HttpDelete]
-        public async Task<IActionResult> UpdateClubAsync(int clubId)
+        public async Task<IActionResult> UpdateClubAsync([FromQuery]int clubId)
         {
             var command = new DeleteClubCommand(clubId);
             var result = await _mediator.Send(command);
