@@ -4,6 +4,7 @@ using RunGroops.Application.Helpers;
 using RunGroops.Application.Queries.ClubQueries;
 using RunGroops.Domain.Interfaces;
 using RunGroops.Infrastructure.Context;
+using RunGroops.Infrastructure.Repositories;
 using RunGroops.Infrastructure.Repository;
 using System.Configuration;
 
@@ -21,6 +22,7 @@ namespace RunGroopsAPI
 
             builder.Services.AddScoped<IClubRepository, ClubRepository>();
             builder.Services.AddScoped<IClubMapper, ClubMapper>();
+            builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresRunGroops")));
