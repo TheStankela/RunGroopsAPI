@@ -67,11 +67,11 @@ namespace RunGroops.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageURL")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ProfilePictureURL")
                         .IsRequired()
                         .HasColumnType("text");
 

@@ -50,10 +50,6 @@ namespace RunGroops.Infrastructure.Repository
         {
             return await _context.Clubs.Where(c => c.Address.City == city).Include(c => c.Address).ToListAsync();
         }
-        public async Task<bool> ClubExists(int id, string? name)
-        {
-            return _context.Clubs.Any(c => c.Id == id || c.Name == name);
-        }
         private async Task<bool> Save()
         {
             var saved = await _context.SaveChangesAsync();

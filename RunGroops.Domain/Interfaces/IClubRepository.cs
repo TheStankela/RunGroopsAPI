@@ -11,6 +11,5 @@ namespace RunGroops.Domain.Interfaces
         public Task<bool> AddClubAsync(Club club);
         public Task<bool> DeleteClubAsync(Club club);
         public Task<bool> UpdateClubAsync(Club club);
-        public Task<bool> ClubExists(int id, string? name);
     }
 }
