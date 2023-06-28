@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.8">
@@ -24,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RunGroops.Application\RunGroops.Application.csproj" />
     <ProjectReference Include="..\RunGroops.Domain\RunGroops.Domain.csproj" />
     <ProjectReference Include="..\RunGroops.Infrastructure\RunGroops.Infrastructure.csproj" />
   </ItemGroup>

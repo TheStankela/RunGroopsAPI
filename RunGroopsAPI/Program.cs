@@ -1,5 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
+using RunGroops.Application.Helpers;
+using RunGroops.Application.Queries.ClubQueries;
 using RunGroops.Domain.Interfaces;
 using RunGroops.Infrastructure.Context;
 using RunGroops.Infrastructure.Repository;
@@ -18,9 +20,16 @@ namespace RunGroopsAPI
             builder.Services.AddControllers();
 
             builder.Services.AddScoped<IClubRepository, ClubRepository>();
+            builder.Services.AddScoped<IClubMapper, ClubMapper>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresRunGroops")));
+
+            builder.Services.AddMediatR(options =>
+            {
+                options.RegisterServicesFromAssemblyContaining<GetAllClubsQuery>();
+            });
+            
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
