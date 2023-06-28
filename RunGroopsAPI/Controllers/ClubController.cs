@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using RunGroops.Domain.EFModels;
+using RunGroops.Application.Queries.ClubQueries;
 using RunGroops.Domain.Interfaces;
-using System.Reflection.Metadata.Ecma335;
+using RunGroops.Application.Commands.ClubCommands;
+using RunGroops.Application.Models;
 
 namespace RunGroopsAPI.Controllers
 {
@@ -11,41 +12,62 @@ namespace RunGroopsAPI.Controllers
     public class ClubController : ControllerBase
     {
         private readonly IClubRepository _clubRepository;
-
-        public ClubController(IClubRepository clubRepository)
+        private readonly IMediator _mediator;
+        public ClubController(IClubRepository clubRepository, IMediator mediator)
         {
             _clubRepository = clubRepository;
+            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllClubsAsync()
         {
-            var result = await _clubRepository.GetClubsAsync();
+            var query = new GetAllClubsQuery();
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetClubByIdAsync(int id)
         {
-            var result = await _clubRepository.GetClubByIdAsync(id);
+            var query = new GetClubByIdQuery(id);
+            var result = await _mediator.Send(query);
             return result is not null ? Ok(result) : NotFound();
         }
         [HttpGet("city/{cityName}")]
-        public async Task<IActionResult> GetClubsByCity(string cityName)
+        public async Task<IActionResult> GetClubsByCityAsync(string cityName)
         {
-            var result = await _clubRepository.GetClubsByCityAsync(cityName);
+            var query = new GetClubsByCityQuery(cityName);
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
         [HttpGet("name={clubName}")]
-        public async Task<IActionResult> GetClubByName(string clubName)
+        public async Task<IActionResult> GetClubByNameAsync(string clubName)
         {
-            var result = await _clubRepository.GetClubByNameAsync(clubName);
+            var query = new GetClubByNameQuery(clubName);
+            var result = await _mediator.Send(query);
             return result is not null ? Ok(result) : NotFound();
         }
         [HttpPost]
-        public async Task<IActionResult> AddClub(Club club)
+        public async Task<IActionResult> AddClubAsync(ClubRequest clubRequest)
         {
-            if (!await _clubRepository.AddClubAsync(club)) return BadRequest();
+            var command = new AddClubCommand(clubRequest);
+            var result = await _mediator.Send(command);
+            return result is true ? Ok("Added successfully!") : BadRequest();
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateClubAsync(int clubId, UpdateClubRequest updateClubRequest)
+        {
+            var command = new UpdateClubCommand(clubId, updateClubRequest);
+            var result = await _mediator.Send(command);
 
-            return Ok();
+            return result is true ? Ok("Updated successfully") : BadRequest();
+        }
+        [HttpDelete]
+        public async Task<IActionResult> UpdateClubAsync(int clubId)
+        {
+            var command = new DeleteClubCommand(clubId);
+            var result = await _mediator.Send(command);
+
+            return result is true ? Ok("Deleted successfully") : BadRequest();
         }
     }
 }
