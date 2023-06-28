@@ -11,11 +11,9 @@ namespace RunGroopsAPI.Controllers
     [ApiController]
     public class ClubController : ControllerBase
     {
-        private readonly IClubRepository _clubRepository;
         private readonly IMediator _mediator;
-        public ClubController(IClubRepository clubRepository, IMediator mediator)
+        public ClubController(IMediator mediator)
         {
-            _clubRepository = clubRepository;
             _mediator = mediator;
         }
         [HttpGet]
