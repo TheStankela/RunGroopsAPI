@@ -9,6 +9,11 @@ using RunGroops.Infrastructure.Repository;
 using FluentValidation;
 using RunGroops.Application.Validators;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using RunGroops.Domain.EFModels;
+using RunGroops.Application.Services;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace RunGroopsAPI
 {
@@ -22,27 +27,84 @@ namespace RunGroopsAPI
 
             builder.Services.AddControllers();
 
+            //IoC
             builder.Services.AddScoped<IClubRepository, ClubRepository>();
             builder.Services.AddScoped<IClubMapper, ClubMapper>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
+            //Fluent Validation
             builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
-
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresRunGroops")));
-
             builder.Services.AddValidatorsFromAssemblyContaining<ClubRequestValidator>();
 
+            //Database
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("RunGroopsConnection")));
+
+            //Identity
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+            builder.Services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+                });
+
+            builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme, option =>
+            {
+                option.Cookie.SameSite = SameSiteMode.None; // change cookie name
+            });
+
+            builder.Services.ConfigureApplicationCookie(o =>
+            {
+                o.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 401;
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToAccessDenied = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 403;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            //MediatR
             builder.Services.AddMediatR(options =>
             {
                 options.RegisterServicesFromAssemblyContaining<GetAllClubsQuery>();
             });
-            
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(options =>
+                {
+                    options.WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+                });
+            });
+            //SwaggerUI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -53,8 +115,13 @@ namespace RunGroopsAPI
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseStaticFiles();
 
+            app.UseRouting();
+            app.UseCors();
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.MapControllers();
 
