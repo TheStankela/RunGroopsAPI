@@ -4,7 +4,7 @@ namespace RunGroops.Domain.Interfaces
 {
     public interface IClubRepository
     {
-        public Task<ICollection<Club>> GetClubsAsync();
+        public Task<ICollection<Club>> GetClubsAsync(int page);
         public Task<ICollection<Club>> GetClubsByCityAsync(string city);
         public Task<Club> GetClubByIdAsync(int id);
         public Task<Club> GetClubByNameAsync(string clubName);

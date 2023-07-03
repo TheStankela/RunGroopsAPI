@@ -7,6 +7,7 @@ using RunGroops.Application.Models;
 using RunGroops.Application.Services;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace RunGroopsAPI.Controllers
 {
@@ -54,7 +55,7 @@ namespace RunGroopsAPI.Controllers
             if (!await _authService.Logout())
                 return BadRequest(ModelState);
 
-            return Ok("Logout successfull!");
+            return Ok(new { Message = "Logout successfull!" });
         }
         [HttpGet("Google")]
         public async Task GoogleLogin()
@@ -88,6 +89,17 @@ namespace RunGroopsAPI.Controllers
             }
 
                 return BadRequest();
+        }
+        [HttpGet("FetchUser")]
+        public async Task<IActionResult> FetchUser()
+        {
+            var result = HttpContext.User.Claims.Select(claim => new
+            {
+                claim.Type,
+                claim.Value,
+            });
+
+            return Ok(new { result });
         }
     }
 }

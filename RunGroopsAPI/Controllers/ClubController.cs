@@ -17,9 +17,9 @@ namespace RunGroopsAPI.Controllers
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllClubsAsync()
+        public async Task<IActionResult> GetAllClubsAsync([FromQuery]int page)
         {
-            var query = new GetAllClubsQuery();
+            var query = new GetAllClubsQuery(page);
             var result = await _mediator.Send(query);
             return Ok(result);
         }

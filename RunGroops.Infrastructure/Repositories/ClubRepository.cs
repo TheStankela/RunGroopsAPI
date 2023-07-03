@@ -41,9 +41,12 @@ namespace RunGroops.Infrastructure.Repository
             return _context.Clubs.Include(c => c.Address).FirstOrDefaultAsync(c => c.Name == clubName);
         }
 
-        public async Task<ICollection<Club>> GetClubsAsync()
+        public async Task<ICollection<Club>> GetClubsAsync(int page)
         {
-            return await _context.Clubs.Include(c => c.Address).ToListAsync();
+            return await _context.Clubs.Include(c => c.Address)
+                .Skip(page * 5)
+                .Take(5)
+                .ToListAsync();
         }
 
         public async Task<ICollection<Club>> GetClubsByCityAsync(string city)

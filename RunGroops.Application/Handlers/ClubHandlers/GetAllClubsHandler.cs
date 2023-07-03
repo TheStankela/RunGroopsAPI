@@ -14,7 +14,7 @@ namespace RunGroops.Application.Handlers.ClubHanders
         }
         public async Task<ICollection<Club>> Handle(GetAllClubsQuery request, CancellationToken cancellationToken)
         {
-            return await _clubRepository.GetClubsAsync();
+            return await _clubRepository.GetClubsAsync(request.Page);
         }
     }
 }
