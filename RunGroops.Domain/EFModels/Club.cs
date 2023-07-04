@@ -1,4 +1,6 @@
-﻿using RunGroops.Domain.Enum;
+﻿using Newtonsoft.Json.Converters;
+using RunGroops.Domain.Enum;
+using System.Text.Json.Serialization;
 
 namespace RunGroops.Domain.EFModels
 {
@@ -10,6 +12,7 @@ namespace RunGroops.Domain.EFModels
         public string ImageURL { get; set; }
         public int AddressId { get; set; }
         public Address Address { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ClubCategory ClubCategory { get; set; }
     }
 }

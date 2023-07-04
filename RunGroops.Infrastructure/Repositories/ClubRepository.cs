@@ -38,7 +38,7 @@ namespace RunGroops.Infrastructure.Repository
 
         public Task<Club?> GetClubByNameAsync(string clubName)
         {
-            return _context.Clubs.Include(c => c.Address).FirstOrDefaultAsync(c => c.Name == clubName);
+            return _context.Clubs.Include(c => c.Address).FirstOrDefaultAsync(c => c.Name.ToLower() == clubName.ToLower());
         }
 
         public async Task<ICollection<Club>> GetClubsAsync(int page)
