@@ -32,6 +32,8 @@ namespace RunGroopsAPI
             builder.Services.AddScoped<IClubMapper, ClubMapper>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IPhotoService, PhotoService>();
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
             //Fluent Validation
             builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
