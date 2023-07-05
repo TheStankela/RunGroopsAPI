@@ -1,4 +1,5 @@
-﻿using RunGroops.Application.Models;
+﻿using Microsoft.AspNetCore.Http;
+using RunGroops.Application.Models;
 using RunGroops.Domain.EFModels;
 
 namespace RunGroops.Application.Helpers
@@ -11,7 +12,7 @@ namespace RunGroops.Application.Helpers
             {
                 Name = clubRequest.Name,
                 Description = clubRequest.Description,
-                ImageURL = clubRequest.ImageURL,
+                ImageURL = "https://res.cloudinary.com/dwtfpyv5a/image/upload/v1688595639/Bzcs0_ontxpc.png",
                 ClubCategory = clubRequest.ClubCategory,
                 Address = new Address
                 {

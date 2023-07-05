@@ -13,9 +13,6 @@ namespace RunGroops.Application.Validators
             RuleFor(x => x.Description)
                 .NotNull().NotEmpty();
 
-            RuleFor(x => x.ImageURL)
-                .NotNull().NotEmpty();
-
             RuleFor(x => x.ClubCategory)
                 .NotNull().NotEmpty();
         }
