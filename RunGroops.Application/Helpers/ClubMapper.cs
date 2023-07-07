@@ -12,7 +12,7 @@ namespace RunGroops.Application.Helpers
             {
                 Name = clubRequest.Name,
                 Description = clubRequest.Description,
-                ImageURL = "https://res.cloudinary.com/dwtfpyv5a/image/upload/v1688595639/Bzcs0_ontxpc.png",
+                ImageURL = "http://res.cloudinary.com/dwtfpyv5a/image/upload/v1688591125/bt3dah7rpnx1hk3b71zj.png",
                 ClubCategory = clubRequest.ClubCategory,
                 Address = new Address
                 {
