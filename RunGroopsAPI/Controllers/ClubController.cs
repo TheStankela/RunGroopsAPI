@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RunGroops.Application.Queries.ClubQueries;
-using RunGroops.Domain.Interfaces;
 using RunGroops.Application.Commands.ClubCommands;
 using RunGroops.Application.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RunGroopsAPI.Controllers
 {
@@ -44,6 +44,7 @@ namespace RunGroopsAPI.Controllers
             var result = await _mediator.Send(query);
             return result is not null ? Ok(result) : NotFound();
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddClubAsync(ClubRequest clubRequest)
         {
@@ -54,6 +55,7 @@ namespace RunGroopsAPI.Controllers
             var result = await _mediator.Send(command);
             return result is true ? Ok("Added successfully!") : BadRequest();
         }
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateClubAsync([FromQuery] int clubId, UpdateClubRequest updateClubRequest)
         {
@@ -65,6 +67,7 @@ namespace RunGroopsAPI.Controllers
 
             return result is true ? Ok("Updated successfully") : BadRequest();
         }
+        [Authorize]
         [HttpDelete]
         public async Task<IActionResult> UpdateClubAsync([FromQuery]int clubId)
         {
