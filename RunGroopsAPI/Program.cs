@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using RunGroops.Application.Helpers;
 using RunGroops.Application.Queries.ClubQueries;
@@ -14,6 +13,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using RunGroops.Domain.EFModels;
 using RunGroops.Application.Services;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace RunGroopsAPI
 {
@@ -31,24 +33,44 @@ namespace RunGroopsAPI
             builder.Services.AddScoped<IClubRepository, ClubRepository>();
             builder.Services.AddScoped<IClubMapper, ClubMapper>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
-            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddScoped<IPhotoService, PhotoService>();
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
             //Fluent Validation
-            builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
-            builder.Services.AddValidatorsFromAssemblyContaining<ClubRequestValidator>();
+          //  builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+            //builder.Services.AddValidatorsFromAssemblyContaining<ClubRequestValidator>();
 
             //Database
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("RunGroopsConnection")));
 
             //Identity
-            builder.Services.AddIdentity<AppUser, IdentityRole>()
+            builder.Services.AddIdentity<AppUser, IdentityRole>(
+                options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            builder.Services.AddAuthentication()
+            builder.Services.AddAuthentication(cfg =>
+                {
+                    cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }).AddJwtBearer(options =>
+                {
+
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:Key"])),
+                        ValidIssuer = builder.Configuration["Token:Issuer"],
+                        ValidateIssuer = true,
+                        ValidateAudience = false,
+                    };
+                })
                 .AddGoogle(options =>
                 {
                     options.ClientId = builder.Configuration["Authentication:Google:ClientId"];

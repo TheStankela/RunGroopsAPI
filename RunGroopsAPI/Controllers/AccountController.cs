@@ -8,6 +8,9 @@ using RunGroops.Application.Services;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using RunGroops.Domain.EFModels;
+using System.Web;
+using RunGroops.Domain.Enum;
 
 namespace RunGroopsAPI.Controllers
 {
@@ -15,45 +18,94 @@ namespace RunGroopsAPI.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IAuthService _authService;
-
-        public AccountController(IAuthService authService)
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IConfiguration _config;
+        private readonly IJWTService _jwtService;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config, RoleManager<IdentityRole> roleManager, IJWTService jwtService)
         {
-            _authService = authService;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _config = config;
+            _roleManager = roleManager;
+            _jwtService = jwtService;
         }
         [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginRequest userLoginRequest)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var userFromDb = await _userManager.FindByEmailAsync(userLoginRequest.Email);
 
-            var result = await _authService.Login(userLoginRequest);
-            if(result.isSuccess)
-                return Ok(new { Message = result.Message });
+            if (userFromDb is null)
+            {
+                return BadRequest("User does not exist");
+            }
 
-            return BadRequest(new { Message = result.Message });
+            var result = await _signInManager.CheckPasswordSignInAsync(userFromDb, userLoginRequest.Password, false);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result);
+            }
+
+            var roles = await _userManager.GetRolesAsync(userFromDb);
+
+            IList<Claim> claims = await _userManager.GetClaimsAsync(userFromDb);
+
+            return Ok(new
+            {
+                result = result,
+                username = userFromDb.UserName,
+                email = userFromDb.Email,
+                token = _jwtService.GenerateToken(userFromDb, roles, claims)
+            });
         }
         [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRegisterRequest userRegisterModel)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var userToCreate = new AppUser
+            {
+                Email = userRegisterModel.Email,
+                UserName = userRegisterModel.Email
+            };
 
-            var result = await _authService.Register(userRegisterModel);
+            //Create User
+            var result = await _userManager.CreateAsync(userToCreate, userRegisterModel.Password);
 
-            if (result.isSuccess)
-                return Ok(new { result.Message });
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(userToCreate, UserRoles.User);
 
-            return BadRequest(new {result.Message});
+                //var userFromDb = await _userManager.FindByEmailAsync(userToCreate.Email);
+
+                //var token = await _userManager.GenerateEmailConfirmationTokenAsync(userFromDb);
+
+                //var uriBuilder = new UriBuilder(_config["ReturnPaths:ConfirmEmail"]);
+                //var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+                //query["token"] = token;
+                //query["userid"] = userFromDb.Id;
+                //uriBuilder.Query = query.ToString();
+                //var urlString = uriBuilder.ToString();
+
+                //var senderEmail = _config["ReturnPaths:SenderEmail"];
+
+                //await _emailSender.SendEmailAsync(senderEmail, userFromDb.Email, "Confirm your email address", urlString);
+
+                //var claim = new Claim("JobTitle", model.JobTitle);
+
+                //await _userManager.AddClaimAsync(userFromDb, claim);
+                return Ok(result);
+
+            }
+            return BadRequest(result);
         }
         [Authorize]
         [HttpPost("Logout")]
         public async Task<IActionResult> Register()
         {
-            if (!await _authService.Logout())
-                return BadRequest(ModelState);
+            await _signInManager.SignOutAsync();
 
             return Ok(new { Message = "Logout successfull!" });
         }
