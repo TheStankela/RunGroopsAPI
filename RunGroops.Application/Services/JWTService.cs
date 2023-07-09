@@ -22,7 +22,7 @@ namespace RunGroops.Application.Services
 
         public string GenerateToken(IdentityUser user, IList<string> roles, IList<Claim> claims)
         {
-
+            claims.Add(new Claim(JwtRegisteredClaimNames.NameId, user.Id));
             claims.Add(new Claim(JwtRegisteredClaimNames.GivenName, user.UserName));
             claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
 
