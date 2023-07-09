@@ -58,7 +58,8 @@ namespace RunGroopsAPI
                 {
                     cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                }).AddJwtBearer(options =>
+                })
+                .AddJwtBearer(options =>
                 {
 
                     options.RequireHttpsMetadata = false;
@@ -71,6 +72,7 @@ namespace RunGroopsAPI
                         ValidateAudience = false,
                     };
                 })
+                .AddCookie()
                 .AddGoogle(options =>
                 {
                     options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
