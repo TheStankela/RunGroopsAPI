@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RunGroops.Infrastructure.Context;
@@ -11,9 +12,11 @@ using RunGroops.Infrastructure.Context;
 namespace RunGroops.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230708120327_AppUserClub")]
+    partial class AppUserClub
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace RunGroops.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("AppUserClub", b =>
+                {
+                    b.Property<int>("ClubsId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("text");
+
+                    b.HasKey("ClubsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("AppUserClub");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -268,9 +286,6 @@ namespace RunGroops.Infrastructure.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("text");
-
                     b.Property<int>("ClubCategory")
                         .HasColumnType("integer");
 
@@ -290,9 +305,22 @@ namespace RunGroops.Infrastructure.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("AppUserId");
-
                     b.ToTable("Clubs");
+                });
+
+            modelBuilder.Entity("AppUserClub", b =>
+                {
+                    b.HasOne("RunGroops.Domain.EFModels.Club", null)
+                        .WithMany()
+                        .HasForeignKey("ClubsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RunGroops.Domain.EFModels.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -363,18 +391,7 @@ namespace RunGroops.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RunGroops.Domain.EFModels.AppUser", "AppUser")
-                        .WithMany("Clubs")
-                        .HasForeignKey("AppUserId");
-
                     b.Navigation("Address");
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("RunGroops.Domain.EFModels.AppUser", b =>
-                {
-                    b.Navigation("Clubs");
                 });
 #pragma warning restore 612, 618
         }
