@@ -46,14 +46,15 @@ namespace RunGroopsAPI.Controllers
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddClubAsync(ClubRequest clubRequest)
+        public async Task<IActionResult> AddClubAsync([FromForm] ClubRequest clubRequest, IFormFile file)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var command = new AddClubCommand(clubRequest);
+            var command = new AddClubCommand(clubRequest, file);
             var result = await _mediator.Send(command);
-            return result is true ? Ok("Added successfully!") : BadRequest();
+
+            return result is true ? Ok(new { Message = "Added successfully!" }) : BadRequest();
         }
         [Authorize]
         [HttpPut]
