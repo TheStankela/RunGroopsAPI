@@ -5,6 +5,6 @@ namespace RunGroops.Application.Helpers
 {
     public interface IClubMapper
     {
-        Club MapClubRequestToClub(ClubRequest clubRequest);
+        Club MapClubRequestToClub(ClubRequest clubRequest, string appUserId);
     }
 }
