@@ -1,9 +1,11 @@
-﻿using RunGroops.Domain.Enum;
+﻿using Microsoft.AspNetCore.Http;
+using RunGroops.Domain.Enum;
 
 namespace RunGroops.Application.Models
 {
     public record UpdateClubRequest(string Name,
         string Description,
-        string ImageURL,
-        ClubCategory ClubCategory);
+        AddressRequest Address,
+        ClubCategory ClubCategory,
+        IFormFile File);
 }
