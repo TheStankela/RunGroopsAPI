@@ -57,6 +57,10 @@ namespace RunGroops.Infrastructure.Repository
         {
             return await _context.Clubs.AnyAsync(c => c.Id == id || c.Name == name);
         }
+        public async Task<ICollection<Club>> GetAllUserClubsAsync(string userId)
+        {
+            return await _context.Clubs.Where(c => c.AppUserId == userId).ToListAsync();
+        }
         private async Task<bool> Save()
         {
             var saved = await _context.SaveChangesAsync();
