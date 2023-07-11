@@ -23,6 +23,14 @@ namespace RunGroopsAPI.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<IActionResult> GetAllUserClubsAsync()
+        {
+            var query = new GetAllUserClubsQuery();
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetClubByIdAsync(int id)
         {
@@ -58,7 +66,7 @@ namespace RunGroopsAPI.Controllers
         }
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> UpdateClubAsync([FromQuery] int clubId, UpdateClubRequest updateClubRequest)
+        public async Task<IActionResult> UpdateClubAsync([FromQuery] int clubId,[FromForm] UpdateClubRequest updateClubRequest)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -66,16 +74,16 @@ namespace RunGroopsAPI.Controllers
             var command = new UpdateClubCommand(clubId, updateClubRequest);
             var result = await _mediator.Send(command);
 
-            return result is true ? Ok("Updated successfully") : BadRequest();
+            return result is true ? Ok(new { Message = "Updated successfully" }) : BadRequest();
         }
         [Authorize]
         [HttpDelete]
-        public async Task<IActionResult> UpdateClubAsync([FromQuery]int clubId)
+        public async Task<IActionResult> DeleteClubAsync([FromQuery]int clubId)
         {
             var command = new DeleteClubCommand(clubId);
             var result = await _mediator.Send(command);
 
-            return result is true ? Ok("Deleted successfully") : BadRequest();
+            return result is true ? Ok(new { Message = "Deleted successfully" }) : BadRequest();
         }
     }
 }
