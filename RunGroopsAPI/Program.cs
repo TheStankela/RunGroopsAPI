@@ -121,7 +121,7 @@ namespace RunGroopsAPI
                 {
                     options.WithOrigins("http://localhost:4200")
                     .AllowAnyHeader()
-                    .AllowAnyHeader()
+                    .AllowAnyMethod()
                     .AllowCredentials();
                 });
             });
@@ -138,13 +138,13 @@ namespace RunGroopsAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseCors();
 
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseCors();
             app.UseAuthentication();
 
             app.UseAuthorization();
