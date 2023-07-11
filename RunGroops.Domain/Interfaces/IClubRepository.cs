@@ -6,6 +6,7 @@ namespace RunGroops.Domain.Interfaces
     {
         public Task<ICollection<Club>> GetClubsAsync(int page);
         public Task<ICollection<Club>> GetClubsByCityAsync(string city);
+        public Task<ICollection<Club>> GetAllUserClubsAsync(string userId);
         public Task<Club> GetClubByIdAsync(int id);
         public Task<Club> GetClubByNameAsync(string clubName);
         public Task<bool> AddClubAsync(Club club);
