@@ -26,7 +26,7 @@ namespace RunGroops.Application.Handlers.ClubHanders
 
         public async Task<bool> Handle(AddClubCommand request, CancellationToken cancellationToken)
         {
-            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId is null)
                 return false;
             
