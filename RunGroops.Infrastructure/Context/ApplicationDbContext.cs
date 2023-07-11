@@ -11,6 +11,7 @@ namespace RunGroops.Infrastructure.Context
         }
         public DbSet<Club> Clubs { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<Race> Races { get; set; }
         //public DbSet<AppUserClub> UserClubs { get; set; }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
