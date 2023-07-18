@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RunGroops.Domain.Enum;
+using System.ComponentModel.DataAnnotations;
 
 namespace RunGroops.Application.Models
 {
@@ -8,9 +9,10 @@ namespace RunGroops.Application.Models
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
+        public int? Mileage { get; set; }
+        public int? Pace { get; set; }
         [Required]
-        [Compare("Password")]
-        public string ConfirmPassword { get; set; }
-
+        public string NickName { get; set; }
+        public UserCategory UserCategory { get; set; }
     }
 }
