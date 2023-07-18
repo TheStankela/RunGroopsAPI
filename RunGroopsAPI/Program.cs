@@ -31,8 +31,12 @@ namespace RunGroopsAPI
 
             //IoC
             builder.Services.AddScoped<IClubRepository, ClubRepository>();
-            builder.Services.AddScoped<IClubMapper, ClubMapper>();
+            builder.Services.AddScoped<IRaceRepository, RaceRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+
+            builder.Services.AddScoped<IClubMapper, ClubMapper>();
             builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddScoped<IPhotoService, PhotoService>();
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
