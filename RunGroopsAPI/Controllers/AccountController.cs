@@ -20,16 +20,14 @@ namespace RunGroopsAPI.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly IConfiguration _config;
         private readonly IJWTService _jwtService;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config, RoleManager<IdentityRole> roleManager, IJWTService jwtService)
+        private readonly IPhotoService _photoService;
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,IJWTService jwtService, IPhotoService photoService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _config = config;
-            _roleManager = roleManager;
             _jwtService = jwtService;
+            _photoService = photoService;
         }
         [AllowAnonymous]
         [HttpPost("Login")]
@@ -63,12 +61,20 @@ namespace RunGroopsAPI.Controllers
         }
         [AllowAnonymous]
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(UserRegisterRequest userRegisterModel)
+        public async Task<IActionResult> Register([FromForm]UserRegisterRequest userRegisterModel, IFormFile file)
         {
+            var photoResult = _photoService.AddPhotoAsync(file);
+            if (string.IsNullOrEmpty(photoResult.Result.Uri.ToString()))
+                return BadRequest("Image upload failed.");
+
             var userToCreate = new AppUser
             {
                 Email = userRegisterModel.Email,
-                UserName = userRegisterModel.Email
+                UserName = userRegisterModel.NickName,
+                ImageURL = photoResult.Result.Url.ToString(),
+                UserCategory = userRegisterModel.UserCategory,
+                Pace = userRegisterModel.Pace,
+                Mileage = userRegisterModel.Mileage
             };
 
             //Create User
