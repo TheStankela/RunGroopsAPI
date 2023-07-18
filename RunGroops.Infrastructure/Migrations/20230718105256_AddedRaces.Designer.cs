@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RunGroops.Infrastructure.Context;
@@ -11,9 +12,11 @@ using RunGroops.Infrastructure.Context;
 namespace RunGroops.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230718105256_AddedRaces")]
+    partial class AddedRaces
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,9 +174,10 @@ namespace RunGroops.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Street")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("Zip")
+                    b.Property<int>("Zip")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -196,18 +200,12 @@ namespace RunGroops.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("ImageURL")
-                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -243,9 +241,6 @@ namespace RunGroops.Infrastructure.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("UserCategory")
-                        .HasColumnType("integer");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
@@ -428,7 +423,7 @@ namespace RunGroops.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("RunGroops.Domain.EFModels.AppUser", "AppUser")
-                        .WithMany("Races")
+                        .WithMany()
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -441,8 +436,6 @@ namespace RunGroops.Infrastructure.Migrations
             modelBuilder.Entity("RunGroops.Domain.EFModels.AppUser", b =>
                 {
                     b.Navigation("Clubs");
-
-                    b.Navigation("Races");
                 });
 #pragma warning restore 612, 618
         }
