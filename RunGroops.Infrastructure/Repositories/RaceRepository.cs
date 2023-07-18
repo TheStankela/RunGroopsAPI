@@ -35,12 +35,10 @@ namespace RunGroops.Infrastructure.Repositories
         {
             return await _context.Races.Include(r => r.Address).FirstOrDefaultAsync(r => r.Id == id);
         }
-
-        public async Task<Race?> GetRaceByNameAsync(string raceName)
+        public async Task<ICollection<Race>> GetRacesByNameAsync(string raceName)
         {
-            return await _context.Races.Include(r => r.Address).FirstOrDefaultAsync(r => r.Name == raceName);
+            return await _context.Races.Include(r => r.Address).Where(r => r.Name.Contains(raceName)).Take(5).ToListAsync();
         }
-
         public async Task<ICollection<Race>> GetRacesAsync(int page)
         {
             return await _context.Races.Include(c => c.Address)
@@ -51,7 +49,7 @@ namespace RunGroops.Infrastructure.Repositories
 
         public async Task<ICollection<Race>> GetRacesByCityAsync(string city)
         {
-            return await _context.Races.Where(r => r.Address.City == city).ToListAsync();
+            return await _context.Races.Include(r => r.Address).Where(r => r.Address.City == city).ToListAsync();
         }
         public async Task<bool> UpdateRaceAsync(Race race)
         {
