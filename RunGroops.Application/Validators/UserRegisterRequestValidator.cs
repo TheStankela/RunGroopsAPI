@@ -29,9 +29,6 @@ namespace RunGroops.Application.Validators
                 .WithMessage("Password must be atleast 8 characters long.")
                 .MaximumLength(24)
                 .WithMessage("Password cannot be longer than 24 characters.");
-
-            RuleFor(x => x.ConfirmPassword)
-                .Matches(x => x.Password);
         }
     }
 }
