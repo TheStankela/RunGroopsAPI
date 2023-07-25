@@ -31,16 +31,18 @@ namespace RunGroops.Application.Services
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Token:Key"]));
+            var key = new SymmetricSecurityKey(Convert.FromBase64String(_configuration["Token:Key"]));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.UtcNow.AddHours(24),
                 SigningCredentials = creds,
                 Issuer = _configuration["Token:Issuer"],
+                Audience = _configuration["Token:Audience"]
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
