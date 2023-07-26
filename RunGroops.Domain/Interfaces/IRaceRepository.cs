@@ -4,10 +4,10 @@ namespace RunGroops.Domain.Interfaces
 {
     public interface IRaceRepository
     {
-        public Task<ICollection<Race>> GetRacesAsync(int page);
+        public Task<IQueryable<Race>> GetRacesAsync();
         public Task<ICollection<Race>> GetRacesByCityAsync(string city);
         public Task<ICollection<Race>> GetAllUserRacesAsync(string userId);
-        public Task<ICollection<Race>> GetRacesByNameAsync(string raceName);
+        public Task<IQueryable<Race>> GetRacesByNameAsync(string raceName);
         public Task<Race> GetRaceByIdAsync(int id);
         public Task<bool> AddRaceAsync(Race race);
         public Task<bool> DeleteRaceAsync(Race race);
