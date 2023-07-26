@@ -23,14 +23,12 @@ namespace RunGroops.Application.Handlers.UserHandlers
             if (result is null)
                 return null;
 
-            var user = new UserResponse
-            {
-                Id = result.Id,
-                Mileage = result.Mileage,
-                Pace = result.Pace,
-                UserName = result.UserName,
-                ImageURL = result.ImageURL,
-            };
+            var user = new UserResponse(
+                result.Id,
+                result.UserName,
+                result.Mileage,
+                result.Pace,
+                result.ImageURL);
 
             return user;
         }
