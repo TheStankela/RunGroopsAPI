@@ -13,14 +13,14 @@ namespace RunGroopsAPI.Controllers
     public class RaceController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public RaceController(IRaceRepository raceRepository, IMediator mediator)
+        public RaceController(IMediator mediator)
         {
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetRacesAsync([FromQuery]int page)
+        public async Task<IActionResult> GetRacesAsync([FromQuery]int page, [FromQuery]int pageSize)
         {
-            var query = new GetRacesQuery(page);
+            var query = new GetRacesQuery(page, pageSize);
             var result = await _mediator.Send(query);
 
             return Ok(result);
@@ -43,9 +43,9 @@ namespace RunGroopsAPI.Controllers
             return result is not null ? Ok(result) : NotFound();
         }
         [HttpGet("name={raceName}")]
-        public async Task<IActionResult> GetRacesByNameAsync(string raceName)
+        public async Task<IActionResult> GetRacesByNameAsync(string raceName, [FromQuery]int page, [FromQuery]int pageSize)
         {
-            var query = new GetRacesByNameQuery(raceName);
+            var query = new GetRacesByNameQuery(raceName, page, pageSize);
             var result = await _mediator.Send(query);
 
             return Ok(result);
@@ -72,15 +72,24 @@ namespace RunGroopsAPI.Controllers
         }
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> UpdateRaceAsync([FromQuery]int raceId, RaceRequest raceRequest)
+        public async Task<IActionResult> UpdateRaceAsync([FromQuery]int raceId, [FromForm]UpdateRaceRequest updateRaceRequest)
         {
-            return Ok();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var command = new UpdateRaceCommand(raceId, updateRaceRequest);
+            var result = await _mediator.Send(command);
+
+            return result is true ? Ok(new { Message = "Updated successfully!" }) : BadRequest(ModelState);
         }
         [Authorize]
         [HttpDelete]
         public async Task<IActionResult> DeleteRaceAsync([FromQuery] int raceId)
         {
-            return Ok();
+            var command = new DeleteRaceCommand(raceId);
+            var result = await _mediator.Send(command);
+
+            return result is true ? Ok(new { Message = "Deleted successfully!" }) : BadRequest(ModelState);
         }
     }
 }

@@ -4,6 +4,7 @@ using RunGroops.Application.Queries.ClubQueries;
 using RunGroops.Application.Commands.ClubCommands;
 using RunGroops.Application.Models;
 using Microsoft.AspNetCore.Authorization;
+using RunGroops.Domain.Interfaces;
 
 namespace RunGroopsAPI.Controllers
 {
@@ -17,9 +18,9 @@ namespace RunGroopsAPI.Controllers
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllClubsAsync([FromQuery]int page)
+        public async Task<IActionResult> GetAllClubsAsync([FromQuery]int page, [FromQuery]int pageSize)
         {
-            var query = new GetAllClubsQuery(page);
+            var query = new GetAllClubsQuery(page, pageSize);
             var result = await _mediator.Send(query);
             return Ok(result);
         }
@@ -46,12 +47,14 @@ namespace RunGroopsAPI.Controllers
             return Ok(result);
         }
         [HttpGet("name={clubName}")]
-        public async Task<IActionResult> GetClubByNameAsync(string clubName)
+        public async Task<IActionResult> GetClubsByNameAsync(string clubName, [FromQuery] int page, [FromQuery] int pageSize)
         {
-            var query = new GetClubByNameQuery(clubName);
+            var query = new GetClubsByNameQuery(clubName, page, pageSize);
             var result = await _mediator.Send(query);
-            return result is not null ? Ok(result) : NotFound();
+
+            return Ok(result);
         }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddClubAsync([FromForm] ClubRequest clubRequest, IFormFile file)
