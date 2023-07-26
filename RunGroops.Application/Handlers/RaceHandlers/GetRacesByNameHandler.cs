@@ -1,20 +1,23 @@
 ﻿using MediatR;
+using RunGroops.Application.Models;
 using RunGroops.Application.Queries.RaceQueries;
 using RunGroops.Domain.EFModels;
 using RunGroops.Domain.Interfaces;
 
 namespace RunGroops.Application.Handlers.RaceHandlers
 {
-    public class GetRacesByNameHandler : IRequestHandler<GetRacesByNameQuery, ICollection<Race>>
+    public class GetRacesByNameHandler : IRequestHandler<GetRacesByNameQuery, PagedList<Race>>
     {
         private readonly IRaceRepository _raceRepository;
         public GetRacesByNameHandler(IRaceRepository raceRepository)
         {
             _raceRepository = raceRepository;
         }
-        public async Task<ICollection<Race>> Handle(GetRacesByNameQuery request, CancellationToken cancellationToken)
+        public async Task<PagedList<Race>> Handle(GetRacesByNameQuery request, CancellationToken cancellationToken)
         {
-           return await _raceRepository.GetRacesByNameAsync(request.RaceName);
+            IQueryable<Race> query = await _raceRepository.GetRacesByNameAsync(request.RaceName);
+
+            return await PagedList<Race>.CreateAsync(query, request.PageNumber, request.PageSize);
         }
     }
 }

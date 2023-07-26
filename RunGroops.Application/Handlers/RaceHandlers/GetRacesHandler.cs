@@ -1,11 +1,13 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using RunGroops.Application.Models;
 using RunGroops.Application.Queries.RaceQueries;
 using RunGroops.Domain.EFModels;
 using RunGroops.Domain.Interfaces;
 
 namespace RunGroops.Application.Handlers.RaceHandlers
 {
-    public class GetRacesHandler : IRequestHandler<GetRacesQuery, ICollection<Race>>
+    public class GetRacesHandler : IRequestHandler<GetRacesQuery, PagedList<Race>>
     {
         private readonly IRaceRepository _raceRepository;
 
@@ -13,9 +15,11 @@ namespace RunGroops.Application.Handlers.RaceHandlers
         {
             _raceRepository = raceRepository;
         }
-        public async Task<ICollection<Race>> Handle(GetRacesQuery request, CancellationToken cancellationToken)
+        public async Task<PagedList<Race>> Handle(GetRacesQuery request, CancellationToken cancellationToken)
         {
-            return await _raceRepository.GetRacesAsync(request.pageNumber);
+            var query = await _raceRepository.GetRacesAsync();
+
+            return await PagedList<Race>.CreateAsync(query, request.PageNumber, request.PageSize);
         }
     }
 }
