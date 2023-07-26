@@ -8,7 +8,6 @@ namespace RunGroops.Infrastructure.Repository
     public class ClubRepository : IClubRepository
     {
         private readonly ApplicationDbContext _context;
-
         public ClubRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -18,37 +17,28 @@ namespace RunGroops.Infrastructure.Repository
             await _context.AddAsync(club);
             return await Save();
         }
-
         public async Task<bool> DeleteClubAsync(Club club)
         {
             _context.Remove(club);
             return await Save();
         }
-
         public async Task<bool> UpdateClubAsync(Club club)
         {
             _context.Update(club);
             return await Save();
         }
-
         public async Task<Club?> GetClubByIdAsync(int id)
         {
            return await _context.Clubs.Include(c => c.Address).FirstOrDefaultAsync(c => c.Id == id); 
         }
-
-        public Task<Club?> GetClubByNameAsync(string clubName)
+        public async Task<IQueryable<Club>> GetClubsByNameAsync(string clubName)
         {
-            return _context.Clubs.Include(c => c.Address).FirstOrDefaultAsync(c => c.Name.ToLower() == clubName.ToLower());
+            return _context.Clubs.Include(r => r.Address).Where(r => r.Name.ToLower().Contains(clubName.ToLower()));
         }
-
-        public async Task<ICollection<Club>> GetClubsAsync(int page)
+        public async Task<IQueryable<Club>> GetClubsAsync()
         {
-            return await _context.Clubs.Include(c => c.Address)
-                .Skip(page * 5)
-                .Take(5)
-                .ToListAsync();
+            return _context.Clubs.Include(c => c.Address);
         }
-
         public async Task<ICollection<Club>> GetClubsByCityAsync(string city)
         {
             return await _context.Clubs.Where(c => c.Address.City == city).Include(c => c.Address).ToListAsync();

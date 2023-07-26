@@ -35,16 +35,13 @@ namespace RunGroops.Infrastructure.Repositories
         {
             return await _context.Races.Include(r => r.Address).FirstOrDefaultAsync(r => r.Id == id);
         }
-        public async Task<ICollection<Race>> GetRacesByNameAsync(string raceName)
+        public async Task<IQueryable<Race>> GetRacesByNameAsync(string raceName)
         {
-            return await _context.Races.Include(r => r.Address).Where(r => r.Name.Contains(raceName)).Take(5).ToListAsync();
+            return _context.Races.Include(r => r.Address).Where(r => r.Name.ToLower().Contains(raceName.ToLower()));
         }
-        public async Task<ICollection<Race>> GetRacesAsync(int page)
+        public async Task<IQueryable<Race>> GetRacesAsync()
         {
-            return await _context.Races.Include(c => c.Address)
-                .Skip(page * 5)
-                .Take(5)
-                .ToListAsync();
+            return _context.Races.Include(c => c.Address);
         }
 
         public async Task<ICollection<Race>> GetRacesByCityAsync(string city)
