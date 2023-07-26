@@ -5,14 +5,10 @@ using RunGroops.Domain.Interfaces;
 using RunGroops.Infrastructure.Context;
 using RunGroops.Infrastructure.Repositories;
 using RunGroops.Infrastructure.Repository;
-using FluentValidation;
-using RunGroops.Application.Validators;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using RunGroops.Domain.EFModels;
 using RunGroops.Application.Services;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -33,6 +29,7 @@ namespace RunGroopsAPI
             builder.Services.AddScoped<IClubRepository, ClubRepository>();
             builder.Services.AddScoped<IRaceRepository, RaceRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IFriendRepository, FriendRepository>();
 
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 
@@ -70,9 +67,10 @@ namespace RunGroopsAPI
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:Key"])),
+                        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Token:Key"])),
                         ValidIssuer = builder.Configuration["Token:Issuer"],
-                        ValidateIssuer = true,
+                        ClockSkew = TimeSpan.FromSeconds(600),
+                        ValidateIssuer = false,
                         ValidateAudience = false,
                     };
                 })
@@ -123,7 +121,9 @@ namespace RunGroopsAPI
             {
                 options.AddDefaultPolicy(options =>
                 {
-                    options.WithOrigins("http://localhost:4200")
+                    options.WithOrigins("http://localhost:4200", "http://192.168.1.6:4200", 
+                        "http://0.0.0.0:4200", "http://rungroops.somee.com", 
+                        "https://rungroops.somee.com", "https://rungroops.netlify.app")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
