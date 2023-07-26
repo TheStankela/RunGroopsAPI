@@ -7,6 +7,11 @@ namespace RunGroops.Domain.EFModels
 {
     public class AppUser : IdentityUser
     {
+        public AppUser()
+        {
+            SentFriendRequests = new List<Friend>();
+            ReceievedFriendRequests = new List<Friend>();
+        }
         public int? Pace { get; set; }
         public int? Mileage { get; set; }
         public string? Description { get; set; }
@@ -19,5 +24,19 @@ namespace RunGroops.Domain.EFModels
         public Address? Address { get; set; }
         public ICollection<Club> Clubs { get; set; }
         public ICollection<Race> Races { get; set; }
+        public virtual ICollection<Friend> SentFriendRequests { get; set; }
+
+        public virtual ICollection<Friend> ReceievedFriendRequests { get; set; }
+
+        [NotMapped]
+        public virtual ICollection<Friend> Friends
+        {
+            get
+            {
+                var friends = SentFriendRequests.Where(x => x.Approved).ToList();
+                friends.AddRange(ReceievedFriendRequests.Where(x => x.Approved));
+                return friends;
+            }
+        }
     }
 }
