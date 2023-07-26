@@ -4,5 +4,6 @@ using RunGroops.Domain.EFModels;
 
 namespace RunGroops.Application.Queries.ClubQueries
 {
-    public record GetAllClubsQuery(int PageNumber, int PageSize) : IRequest<PagedList<Club>>;
+    public record GetClubsByNameQuery(
+        string Name, int PageNumber, int PageSize) : IRequest<PagedList<Club>>;
 }

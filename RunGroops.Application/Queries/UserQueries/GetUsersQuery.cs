@@ -1,12 +1,8 @@
 ﻿using MediatR;
 using RunGroops.Application.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RunGroops.Domain.EFModels;
 
 namespace RunGroops.Application.Queries.UserQueries
 {
-    public record GetUsersQuery(int PageNumber) : IRequest<ICollection<UserResponse>>;
+    public record GetUsersQuery(int PageNumber, int pageSize) : IRequest<PagedList<UserResponse>>;
 }

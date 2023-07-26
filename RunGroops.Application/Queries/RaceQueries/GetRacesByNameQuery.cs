@@ -1,7 +1,8 @@
 ﻿using MediatR;
+using RunGroops.Application.Models;
 using RunGroops.Domain.EFModels;
 
 namespace RunGroops.Application.Queries.RaceQueries
 {
-    public record GetRacesByNameQuery(string RaceName) : IRequest<ICollection<Race>>;
+    public record GetRacesByNameQuery(string RaceName, int PageNumber, int PageSize) : IRequest<PagedList<Race>>;
 }
